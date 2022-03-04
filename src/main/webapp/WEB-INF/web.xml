@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <!--注册欢迎页-->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+
+    <!--注册设置编码的过滤器-->
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>com.bjpowernode.crm.web.filter.EncodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>*.do</url-pattern> <!--如果是以 “通配符.文件后缀名” 的形式，前面不需要加“/”-->
+    </filter-mapping>
+
+    <!--注册防止恶意访问资源的过滤器-->
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>com.bjpowernode.crm.web.filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+
+
+    <!--注册监听器-->
+    <listener>
+        <listener-class>com.bjpowernode.crm.web.listener.SysInitListener</listener-class>
+    </listener>
+
+
+    <!--用户控制器-->
+    <servlet>
+        <servlet-name>UserController</servlet-name>
+        <servlet-class>com.bjpowernode.crm.settings.web.controller.UserController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserController</servlet-name>
+        <!--验证账号密码在数据库中是否存在相应的记录-->
+        <url-pattern>/settings/user/loginVerification.do</url-pattern>
+    </servlet-mapping>
+
+    <!--市场活动控制器-->
+    <servlet>
+        <servlet-name>ActivityController</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ActivityController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ActivityController</servlet-name>
+        <!--查询所有用户列表-->
+        <url-pattern>/workbench/activity/queryUserList.do</url-pattern>
+        <!--插入市场活动信息-->
+        <url-pattern>/workbench/activity/saveMarketActivity.do</url-pattern>
+        <!--查询所有市场活动-->
+        <url-pattern>/workbench/activity/queryMarketActivities.do</url-pattern>
+        <!--批量删除市场活动-->
+        <url-pattern>/workbench/activity/deleteMarketActivity.do</url-pattern>
+        <!--获取修改信息（用户信息列表和需要修改的市场活动对象）-->
+        <url-pattern>/workbench/activity/getUserListAndActivity.do</url-pattern>
+        <!--更新市场活动信息-->
+        <url-pattern>/workbench/activity/updateMarketActivity.do</url-pattern>
+        <!--展示市场活动详细信息-->
+        <url-pattern>/workbench/activity/showActDetail.do</url-pattern>
+        <!--展示市场活动备注信息列表-->
+        <url-pattern>/workbench/activity/showActRemarkList.do</url-pattern>
+        <!--删除单条市场活动备注信息-->
+        <url-pattern>/workbench/activity/deleteOneActRemark.do</url-pattern>
+        <!--添加市场活动备注信息-->
+        <url-pattern>/workbench/activity/saveActRemark.do</url-pattern>
+        <!--更新市场活动备注信息-->
+        <url-pattern>/workbench/activity/updateActRemark.do</url-pattern>
+    </servlet-mapping>
+
+    <!--线索（潜在客户）控制器-->
+    <servlet>
+        <servlet-name>ClueController</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ClueController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ClueController</servlet-name>
+        <!--查询所有用户列表-->
+        <url-pattern>/workbench/clue/queryUserList.do</url-pattern>
+        <!--插入线索信息-->
+        <url-pattern>/workbench/clue/saveClue.do</url-pattern>
+        <!--查询所有线索-->
+        <url-pattern>/workbench/clue/queryClues.do</url-pattern>
+        <!--批量删除线索-->
+        <url-pattern>/workbench/clue/deleteClue.do</url-pattern>
+        <!--获取修改信息（用户信息列表和需要修改的线索对象）-->
+        <url-pattern>/workbench/clue/getUserListAndClue.do</url-pattern>
+        <!--更新市场活动信息-->
+        <url-pattern>/workbench/clue/updateClue.do</url-pattern>
+        <!--展示线索详细信息-->
+        <url-pattern>/workbench/clue/showClueDetail.do</url-pattern>
+        <!--获取对应线索关联的市场活动列表-->
+        <url-pattern>/workbench/clue/getActListByClueId.do</url-pattern>
+        <!--解除线索与市场活动的关联关系-->
+        <url-pattern>/workbench/clue/debundClueAndAct.do</url-pattern>
+        <!--根据市场活动名称获取市场活动列表，并且展现的市场活动没有与当前线索关联过-->
+        <url-pattern>/workbench/clue/getActListByNameAndNotByClueId.do</url-pattern>
+        <!--为当前线索关联市场活动-->
+        <url-pattern>/workbench/clue/bundClueAndAct.do</url-pattern>
+        <!--根据市场活动名，获取并展现相应的市场活动列表-->
+        <url-pattern>/workbench/clue/getActListByName.do</url-pattern>
+        <!--转换线索-->
+        <url-pattern>/workbench/clue/convertClue.do</url-pattern>
+    </servlet-mapping>
+
+
+    <!--客户控制器-->
+    <servlet>
+        <servlet-name>CustomerController</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.CustomerController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerController</servlet-name>
+        <!--查询所有客户-->
+        <url-pattern>/workbench/customer/queryCustomers.do</url-pattern>
+    </servlet-mapping>
+
+
+    <!--联系人控制器-->
+    <servlet>
+        <servlet-name>ContactsController</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ContactsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ContactsController</servlet-name>
+        <!--查询所有联系人-->
+        <url-pattern>/workbench/contacts/queryContacts.do</url-pattern>
+    </servlet-mapping>
+
+
+    <!--交易控制器-->
+    <servlet>
+        <servlet-name>TranController</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.TranController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TranController</servlet-name>
+        <!--查询所有客户-->
+        <url-pattern>/workbench/transaction/queryTransaction.do</url-pattern>
+        <!--点击创建时，查出用户列表-->
+        <url-pattern>/workbench/transaction/createTran.do</url-pattern>
+        <!--通过模糊查询，查出相应的客户名称-->
+        <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
+        <!--通过模糊查询，查出市场活动列表-->
+        <url-pattern>/workbench/transaction/getActivityList.do</url-pattern>
+        <!--通过模糊查询，查出联系人列表-->
+        <url-pattern>/workbench/transaction/getContactsList.do</url-pattern>
+        <!--保存交易信息，创建交易-->
+        <url-pattern>/workbench/transaction/saveTransaction.do</url-pattern>
+        <!--展示交易的详细信息-->
+        <url-pattern>/workbench/transaction/showTranDetail.do</url-pattern>
+        <!--根据交易id获得交易历史列表-->
+        <url-pattern>/workbench/transaction/getTranHistoryListByTranId.do</url-pattern>
+        <!--更改交易阶段，更新交易信息，并创建多一条交易历史-->
+        <url-pattern>/workbench/transaction/changeStage.do</url-pattern>
+        <!--获取展示图表所需要的的数据-->
+        <url-pattern>/workbench/transaction/getChartData.do</url-pattern>
+
+    </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bjpowernode.crm.workbench.dao.ActivityRemarkDao">
+
+    <select id="queryDelActRemarkCount" resultType="int">
+        select
+            count(*)
+        from
+            tbl_activity_remark
+        where activityId in
+            <foreach collection="array" item="actId" open="(" close=")" separator=",">
+                #{actId}
+            </foreach>
+    </select>
+
+
+    <delete id="deleteActRemark">
+        delete from
+            tbl_activity_remark
+        where activityId in
+            <foreach collection="array" item="actId" open="(" close=")" separator=",">
+                #{actId}
+            </foreach>
+    </delete>
+
+
+    <select id="getActRemarkList" resultType="com.bjpowernode.crm.workbench.domain.ActivityRemark">
+        select * from tbl_activity_remark where activityId=#{activityId} order by createTime desc
+    </select>
+
+
+    <delete id="deleteOneActRemark">
+        delete from tbl_activity_remark where id=#{id}
+    </delete>
+
+
+    <insert id="saveActRemark">
+        insert into tbl_activity_remark
+            (id, noteContent, createTime, createBy, editFlag, activityId)
+        values
+            (#{id}, #{noteContent}, #{createTime}, #{createBy}, #{editFlag}, #{activityId})
+    </insert>
+
+
+    <update id="updateActRemark">
+        update tbl_activity_remark set noteContent=#{noteContent}, editTime=#{editTime}, editBy=#{editBy}, editFlag=#{editFlag} where id=#{id}
+    </update>
+
+
+</mapper>

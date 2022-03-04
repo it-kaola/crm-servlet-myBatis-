@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bjpowernode.crm.workbench.dao.ActivityDao">
+
+    <insert id="saveMarketActivity">
+        insert into tbl_activity
+            (id, owner, name, startDate, endDate, cost, description, createTime, createBy)
+        values
+            (#{id}, #{owner}, #{name}, #{startDate}, #{endDate}, #{cost}, #{description}, #{createTime}, #{createBy})
+    </insert>
+
+    <select id="queryTotalByCondition" resultType="int">
+        select
+            count(*)
+        from
+            tbl_activity a
+        join
+            tbl_user u
+        on
+            a.owner = u.id
+        <where>
+            <if test="name != null and name != '' ">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''"> <!--此处的owner是java对象中的属性-->
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.endDate &lt; #{startDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryMarketActivitiesByCondition" resultType="com.bjpowernode.crm.workbench.domain.Activity">
+        select
+            a.id,
+            a.name,
+            u.name as owner, <!--tbl_activity中的owner是tbl_user的id值，但查询出来的结果不能展示成id值，必须是所有者的姓名，所以需要使用表连接-->
+            a.startDate,
+            a.endDate
+        from
+            tbl_activity a
+        join
+            tbl_user u
+        on
+            a.owner = u.id
+        <where>
+            <if test="name != null and name != '' ">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''"> <!--此处的owner是java对象中的属性-->
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.endDate &lt; #{startDate}
+            </if>
+        </where>
+        order by
+            a.createTime desc
+        limit
+            #{startIndex}, #{pageSize}
+    </select>
+
+    <delete id="deleteMarketActivity">
+        delete from
+            tbl_activity
+        where id in
+            <foreach collection="array" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </delete>
+
+    <select id="queryOneActivity" resultType="com.bjpowernode.crm.workbench.domain.Activity">
+        select * from tbl_activity where id=#{id}
+    </select>
+
+    <update id="updateMarketActivity">
+        update tbl_activity set
+            owner=#{owner},
+            name=#{name},
+            startDate=#{startDate},
+            endDate=#{endDate},
+            cost=#{cost},
+            description=#{description},
+            editTime=#{editTime},
+            editBy=#{editBy}
+        where
+            id=#{id}
+    </update>
+
+    <select id="getActDetailById" resultType="com.bjpowernode.crm.workbench.domain.Activity">
+        select
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate,
+            a.cost,
+            a.description,
+            a.createTime,
+            a.createBy,
+            a.editTime,
+            a.editBy
+        from
+            tbl_activity a
+        join
+            tbl_user u
+        on
+            a.owner = u.id
+        where
+            a.id=#{id}
+    </select>
+
+    <select id="getActListByClueId" resultType="com.bjpowernode.crm.workbench.domain.Activity">
+        select
+            r.id, <!--这个id是关系表中的id，将其封装到市场活动对象中-->
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+        from
+            tbl_activity a
+        join
+            tbl_user u
+        on
+            a.owner = u.id
+        join
+            tbl_clue_activity_relation r
+        on
+            a.id = r.activityId
+        where
+            r.clueId = #{clueId}
+    </select>
+
+    <select id="getActListByNameAndNotByClueId" resultType="com.bjpowernode.crm.workbench.domain.Activity">
+        select
+            a.id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner
+        from
+            tbl_activity a
+        join
+            tbl_user u
+        on
+            a.owner = u.id
+        where
+            a.name like '%' #{activityName} '%' and a.id not in (select activityId from tbl_clue_activity_relation where clueId=#{clueId})
+    </select>
+
+    <select id="getActListByName" resultType="com.bjpowernode.crm.workbench.domain.Activity">
+        select
+            a.id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner
+        from
+            tbl_activity a
+        join
+            tbl_user u
+        on
+            a.owner=u.id
+        where
+            a.name like '%' #{actName} '%'
+    </select>
+
+</mapper>

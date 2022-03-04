@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bjpowernode.crm.workbench.dao.ContactsDao">
+	
+  	<insert id="saveContacts">
+        insert into tbl_contacts(
+            id,
+            owner,
+            source,
+            customerId,
+            fullname,
+            appellation,
+            email,
+            mphone,
+            job,
+            birth,
+            createBy,
+            createTime,
+            description,
+            contactSummary,
+            nextContactTime,
+            address
+        ) values(
+            #{id},
+            #{owner},
+            #{source},
+            #{customerId},
+            #{fullname},
+            #{appellation},
+            #{email},
+            #{mphone},
+            #{job},
+            #{birth},
+            #{createBy},
+            #{createTime},
+            #{description},
+            #{contactSummary},
+            #{nextContactTime},
+            #{address}
+        )
+    </insert>
+
+
+    <select id="getContactsByCondition" resultType="com.bjpowernode.crm.workbench.domain.Contacts">
+        select
+            c1.id,
+            u.name as owner,
+            c2.name as customerId,
+            c1.fullname,
+            c1.source,
+            c1.birth
+        from
+            tbl_contacts c1
+        join
+            tbl_user u
+        on
+            c1.owner=u.id
+        join
+            tbl_customer c2
+        on
+            c1.customerId=c2.id
+        <where>
+            <if test="owner != null and owner != ''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="customerId != null and customerId != ''">
+                and c2.name like '%' #{customerId} '%'
+            </if>
+            <if test="fullname != null and fullname != ''">
+                and c1.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="source != null and source != ''">
+                and c1.source=#{source}
+            </if>
+            <if test="birth != null and birth != ''">
+                and c1.birth like '%' #{birth} '%'
+            </if>
+        </where>
+        order by
+            c1.createTime desc
+        limit
+            #{startIndex}, #{pageSize}
+
+
+    </select>
+
+
+    <select id="getContactsTotalByCondition" resultType="int">
+        select
+            count(*)
+        from
+            tbl_contacts c1
+        join
+            tbl_user u
+        on
+            c1.owner=u.id
+        join
+            tbl_customer c2
+        on
+            c1.customerId=c2.id
+        <where>
+            <if test="owner != null and owner != ''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="customerId != null and customerId != ''">
+                and c2.name like '%' #{customerId} '%'
+            </if>
+            <if test="fullname != null and fullname != ''">
+                and c1.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="source != null and source != ''">
+                and c1.source=#{source}
+            </if>
+            <if test="birth != null and birth != ''">
+                and c1.birth like '%' #{birth} '%'
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getContactsList" resultType="com.bjpowernode.crm.workbench.domain.Contacts">
+        select id, fullname, email, mphone from tbl_contacts where fullname like '%' #{fullname} '%'
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
